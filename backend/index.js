@@ -1,5 +1,6 @@
 const express = require("express");
 const mysql = require("mysql");
+const cors = require("cors");
 
 const db = mysql.createPool({
     host: "localhost",
@@ -9,6 +10,7 @@ const db = mysql.createPool({
 });
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
@@ -18,11 +20,55 @@ function timeout (ms) {
     return new Promise(res => setTimeout(res,ms));
 }
 
-app.get('/', (req, res) => {
+app.get('/api/getUsers', (req, res) => {
     
-    const name = req.body.name;
+    const getUsers = 'SELECT * FROM bankdb.users;';
 
-    res.send(`Hello there! How are you ${name}?`);
+    db.query(getUsers, (err, result) => {
+        if(err){
+            res.send('err');
+        }
+        else{
+            res.send(result);
+        }
+
+    })
+});
+
+app.get('/api/transactions', (req, res) => {
+    
+    const getUsers = 'SELECT * FROM bankdb.transactions;';
+
+    db.query(getUsers, (err, result) => {
+        if(err){
+            res.send('err');
+        }
+        else{
+            res.send(result);
+        }
+
+    })
+});
+
+app.post('/api/getTransactionUser', (req, res) => {
+    
+    const mobileNumber = req.body.mobileNumber;
+    const getTransactionUser = 'SELECT * FROM bankdb.transactions WHERE sender_mobile_number=? OR reciever_mobile_number=? ;';
+
+    console.log('recieved');
+    console.log(req.body);
+
+    db.query(getTransactionUser, [mobileNumber,mobileNumber], (err, result) => {
+        if(err){
+            res.send('err');
+        }
+        else{
+            console.log('sent');
+            console.log(result);
+            res.send(result);
+        }
+
+    })
 });
 
 app.post('/api/addUser', (req, res) => {
@@ -32,6 +78,9 @@ app.post('/api/addUser', (req, res) => {
     const lastName = req.body.lastName;
     const balance = req.body.balance;
 
+    console.log('receiver');
+    console.log(req.body);
+
     const addUser = 'INSERT INTO users (mobileNumber, firstName, lastName, balance) VALUES (?, ?, ?, ?);'; 
 
     db.query(addUser, [mobileNumber, firstName, lastName, balance], (err, result) => {
@@ -39,6 +88,8 @@ app.post('/api/addUser', (req, res) => {
             console.log(err);
         }
         else{
+            console.log('sent');
+            console.log(result);
             res.send(`${firstName} added into database`);
         }
     })
