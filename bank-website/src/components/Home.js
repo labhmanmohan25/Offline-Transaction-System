@@ -15,8 +15,14 @@ const columns = [
         editable: false,
     },
     {
-        field: 'fullName',
-        headerName: 'Full name',
+        field: 'firstName',
+        headerName: 'First name',
+        width: 200,
+        editable: false,
+    },
+    {
+        field: 'lastName',
+        headerName: 'Last name',
         width: 200,
         editable: false,
     },
@@ -96,8 +102,8 @@ const transactionsColumns = [
 ]
 
 const rows = [
-    { id: 1, mobileNumber: 9867130540, fullName: 'Manmohan Labh', balance: 50000 },
-    { id: 2, mobileNumber: 9326004454, fullName: 'Apurva Biswas', balance: 100000 },
+    { id: 1, mobileNumber: 9867130540, firstName: 'Vision', lastName: 'Maximof', balance: 50000 },
+    { id: 2, mobileNumber: 9326004454, firstName: 'Wanda', lastName: 'Maximof', balance: 100000 },
 ];
 
 const transactions = [
@@ -140,7 +146,8 @@ const useStyles = makeStyles((theme) => ({
 export default function Home() {
     const classes = useStyles();
 
-    const [fullName, setFullName] = useState(null);
+    const [firstName, setFirstName] = useState(null);
+    const [lastName, setLastName] = useState(null);
     const [mobileNumber, setMobileNumber] = useState(null);
     const [balance, setBalance] = useState(null);
     const [showTransactionList, setShowTransactionList] = useState(null);
@@ -155,7 +162,7 @@ export default function Home() {
             <div>
                 <div className={classes.container}>
                     <Typography variant="h5" gutterBottom>
-                        Transaction List for {data.row.fullName}
+                        Transaction List for {data.row.firstName}
                     </Typography>
                 </div>
                 <div>
@@ -190,10 +197,19 @@ export default function Home() {
                     <TextField
                         required
                         id="outlined-required"
-                        label="Full Name"
+                        label="First Name"
                         variant="outlined"
                         onChange={event => {
-                            setFullName(event.target.value);
+                            setFirstName(event.target.value);
+                        }}
+                    />
+                    <TextField
+                        required
+                        id="outlined-required"
+                        label="Last Name"
+                        variant="outlined"
+                        onChange={event => {
+                            setLastName(event.target.value);
                         }}
                     />
                     <TextField
@@ -218,7 +234,7 @@ export default function Home() {
                 </form>
                 <div className={classes.container}>
                     <div style={{marginTop: 10}}>
-                        {fullName !== null && mobileNumber !== null && balance !== null && fullName !== '' && mobileNumber !== '' && balance !== ''
+                        {firstName !== null && lastName !== null && mobileNumber !== null && balance !== null && firstName !== '' && lastName !== '' && mobileNumber !== '' && balance !== ''
                         ?   <Button variant="contained" color="primary" size="large">
                                 Add user
                             </Button>
